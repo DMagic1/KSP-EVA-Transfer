@@ -54,6 +54,8 @@ namespace EVATransfer
 		[KSPField]
 		public bool tooltips;
 		[KSPField]
+		public float loxlfTransferRatio;
+		[KSPField]
 		public bool transferLF;
 		[KSPField]
 		public bool transferLOX;

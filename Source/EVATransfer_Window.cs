@@ -478,7 +478,7 @@ namespace EVATransfer
 					amount = (scale / 100) * sourceValues[index];
 
 					if (oxi)
-						amount *= (11d / 9d);
+						amount *= evaModule.loxlfTransferRatio;
 
 					if (amount > (oxi ? oxidizerAmount[0] : sourceValues[index]))
 						amount = (oxi ? oxidizerAmount[0] : sourceValues[index]);
@@ -503,7 +503,7 @@ namespace EVATransfer
 					amount = -1 * (scale / 100) * targetValues[index];
 
 					if (oxi)
-						amount *= (11d / 9d);
+						amount *= evaModule.loxlfTransferRatio;
 
 					if (amount > (oxi ? oxidizerAmount[2] : targetValues[index]))
 						amount = (oxi ? oxidizerAmount[2] : targetValues[index]);
@@ -718,7 +718,7 @@ namespace EVATransfer
 					{
 						if (scale > 1)
 						{
-							oxidizerTransferAmount = (scale / 100) * sourceValues[i] * (11d / 9d);
+							oxidizerTransferAmount = (scale / 100) * sourceValues[i] * evaModule.loxlfTransferRatio;
 
 							if (oxidizerTransferAmount > oxidizerAmount[0])
 								oxidizerTransferAmount = oxidizerAmount[0];
@@ -728,7 +728,7 @@ namespace EVATransfer
 						}
 						else if (scale < -1)
 						{
-							oxidizerTransferAmount = ((scale * -1) / 100) * targetValues[i] * (11d / 9d);
+							oxidizerTransferAmount = ((scale * -1) / 100) * targetValues[i] * evaModule.loxlfTransferRatio;
 
 							if (oxidizerTransferAmount > oxidizerAmount[2])
 								oxidizerTransferAmount = oxidizerAmount[2];
@@ -975,7 +975,7 @@ namespace EVATransfer
 
 			if (lfLOX)
 			{
-				loxSubract = oxidizerStartAmount * time * (11d / 9d);
+				loxSubract = oxidizerStartAmount * time * evaModule.loxlfTransferRatio;
 				loxPartSubtract = loxSubract;
 			}
 
