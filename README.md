@@ -25,11 +25,11 @@ license][ETLicense]
  * What is EVA Transfer?
      * A single-purpose addon that allows for resource transfer between two disconnected vessels using an EVA-attachable resource transfer pipe.
  * How is this different from KAS/KIS?
-     * This adds only a single feature and lacks much of what is possible with KAS and/or KIS
-	 * The resource transfer pipe **does not** dock the two vessels together, it is a purely cosmetic connection
-	 * All resource transfer is handled internally by thy EVA Transfer code; no manual transfer between individual fuel tanks is possible
+     * This adds only a single feature and lacks much of what is possible with KAS and/or KIS.
+	 * The resource transfer pipe **does not** dock the two vessels together, it is a purely cosmetic connection.
+	 * All resource transfer is handled internally by thy EVA Transfer code; no manual transfer between individual fuel tanks is possible.
 	 * The EVA Transfer pipe start point must be attached to a vessel in the editor, there is no built-in option to attach the pipe itself on EVA, only to connect an already attached pipe to a second vessel.
-	     * KIS is supported and can be used to attach the EVA Transfer pipe start point while on EVA
+	     * KIS is supported and can be used to attach the EVA Transfer pipe start point while on EVA.
  * Are there options for which resources can be transferred, how long the pipe can be, etc...?
      * There are many options for configuring EVA Transfer available by editing the included part config file (or by using a Module Manager config to do the same)
 	 * Each of the **primary resources** can be toggled on or off; all **other resources** are controlled by a single option
@@ -37,6 +37,7 @@ license][ETLicense]
 	 * Resource container **fill mode** can be specified; smallest to largest, the reverse, or no order are the options.
 	 * The **maximum number of resources** that can be simultaneously transferred can be specified.
 	 * The option to specify a **Kerbal Trait** to connect the transfer line and a **minimum level** are available.
+	 * The **Oxidizer To Liquid Fuel Ratio** for linked mode can be specified.
 	 * **Tooltips** for the window can be activated.
  * Something has gone wrong; where can I get help?
      * If you run into errors, transfer lines not connecting, resource transfer not working, etc... report problems either to the [GitHub Issues][ET:issues] section or the [KSP Forum Thread][ET:release]. 
