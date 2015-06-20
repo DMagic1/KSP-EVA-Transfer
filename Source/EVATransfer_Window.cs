@@ -419,8 +419,13 @@ namespace EVATransfer
 				r.width = WindowRect.width - 20;
 				r.height = 20;
 
-				if (GUI.Button(r, transferActive ? "Stop Transfer" : "Begin Transfer"))
-					toggleTransfer();
+				if (dropDown)
+					GUI.Label(r, transferActive ? "Stop Transfer" : "Begin Transfer", EVATransfer_Skins.button);
+				else
+				{
+					if (GUI.Button(r, transferActive ? "Stop Transfer" : "Begin Transfer"))
+						toggleTransfer();
+				}
 			}
 		}
 
