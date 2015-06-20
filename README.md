@@ -80,6 +80,23 @@ license][ETLicense]
    * Only parts that contain both liquid fuel and oxidizer will be considered when calculating resource amounts for each
    * Each resource will be transferred in the correct ratio of LF to LOX (9:11)
 
+        useProfession = Engineer		//The Experience Trait Title required to attach the fuel line; delete or leave blank for none
+		minLevel = 0					//The minimum level required to attach the fuel line
+		maxDistance = 200  				//The maximum length of the fuel line
+		maxSlack = 10					//The amount of slack a connected fuel line has before being disconnected
+		maxTransfers = 5				//The maximum number of resources that can be simultaneously transferred
+		transferSpeed = 8				//The transfer time, in seconds, of a 100% transfer
+		fillMode = 2					//Determines the order in which resource containers are filled; 0 = smallest first; 1 = largest first; 2 = no order
+		tooltips = True					//Tooltips for the transfer window
+		loxlfTransferRatio = 1.222		//The ratio of oxidizer to liquid fuel when using linked transfer mode
+		transferLF = True				//Specify which of the primary resources can be transferred
+		transferLOX = True
+		transferMono = True
+		transferXen = True
+		transferEC = True
+		transferOre = True
+		transferAll = True				//Specify all other resources that have a valid transfer mode (ie no solid fuel)
+   
 
 [DMagic]: http://forum.kerbalspaceprogram.com/members/59127
 [TriggerAu]: http://forum.kerbalspaceprogram.com/members/59550
