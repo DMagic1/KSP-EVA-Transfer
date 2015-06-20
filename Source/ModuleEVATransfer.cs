@@ -403,6 +403,7 @@ namespace EVATransfer
 
 			evaWindow.activateVessels(sourceVessel, targetVessel);
 
+			Events["dropEVAFuelLine"].active = false;
 			Events["pickupEVAFuelLine"].active = false;
 			Events["cutEVAFuelLine"].active = true;
 			Events["openEVAFuelTransfer"].active = true;
