@@ -139,7 +139,7 @@ namespace EVATransfer
 
 			if (compoundPart.attachState == CompoundPart.AttachState.Attaching)
 			{
-				if (!HighLogic.LoadedSceneIsEditor)
+				if (HighLogic.LoadedSceneIsEditor)
 				{
 					compoundPart.attachState = CompoundPart.AttachState.Detached;
 					InputLockManager.ClearControlLocks();
