@@ -84,8 +84,8 @@ license][ETLicense]
    * The included part config file has several options available
    * Do not change any of the fields not shown below
    
-       MODULE
-	   {
+        MODULE
+	    {
 		name = ModuleEVATransfer		
    
         useProfession = Engineer		//The Experience Trait Title required to attach the fuel line; delete or leave blank for none
@@ -104,7 +104,7 @@ license][ETLicense]
 		transferEC = True
 		transferOre = True
 		transferAll = True				//Specify all other resources that have a valid transfer mode (ie no solid fuel)
-	   }
+	    }
 
    
 
