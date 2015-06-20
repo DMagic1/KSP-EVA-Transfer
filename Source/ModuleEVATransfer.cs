@@ -38,37 +38,37 @@ namespace EVATransfer
 	public class ModuleEVATransfer : CModuleLinkedMesh
 	{
 		[KSPField]
-		public string useProfession;
+		public string useProfession = "Engineer";
 		[KSPField]
-		public int minLevel;
+		public int minLevel = 0;
 		[KSPField]
-		public float maxDistance;
+		public float maxDistance = 200;
 		[KSPField]
-		public float maxSlack;
+		public float maxSlack = 10;
 		[KSPField]
-		public int maxTransfers;
+		public int maxTransfers = 5;
 		[KSPField]
-		public float transferSpeed;
+		public float transferSpeed = 8;
 		[KSPField]
-		public int fillMode;
+		public int fillMode = 2;
 		[KSPField]
-		public bool tooltips;
+		public bool tooltips = true;
 		[KSPField]
-		public float loxlfTransferRatio;
+		public float loxlfTransferRatio = 1.2222f;
 		[KSPField]
-		public bool transferLF;
+		public bool transferLF = true;
 		[KSPField]
-		public bool transferLOX;
+		public bool transferLOX = true;
 		[KSPField]
-		public bool transferMono;
+		public bool transferMono = true;
 		[KSPField]
-		public bool transferXen;
+		public bool transferXen= true;
 		[KSPField]
-		public bool transferEC;
+		public bool transferEC = true;
 		[KSPField]
-		public bool transferOre;
+		public bool transferOre = true;
 		[KSPField]
-		public bool transferAll;
+		public bool transferAll = true;
 
 		private Vessel EVA;
 		private Transform EVAJetpack;
