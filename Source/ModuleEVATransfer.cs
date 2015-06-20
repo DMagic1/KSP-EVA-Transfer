@@ -293,6 +293,7 @@ namespace EVATransfer
 			if (!setEVAPosition())
 				return;
 
+			Events["pickupEVAFuelLine"].active = false;
 			Events["dropEVAFuelLine"].active = true;
 
 			EVAAttachState = CompoundPart.AttachState.Attaching;
