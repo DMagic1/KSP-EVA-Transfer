@@ -80,6 +80,14 @@ license][ETLicense]
    * Only parts that contain both liquid fuel and oxidizer will be considered when calculating resource amounts for each
    * Each resource will be transferred in the correct ratio of LF to LOX (9:11)
 
+#### User adjustable part config file fields
+   * The included part config file has several options available
+   * Do not change any of the fields not shown below
+   
+       MODULE
+	   {
+		name = ModuleEVATransfer		
+   
         useProfession = Engineer		//The Experience Trait Title required to attach the fuel line; delete or leave blank for none
 		minLevel = 0					//The minimum level required to attach the fuel line
 		maxDistance = 200  				//The maximum length of the fuel line
@@ -96,6 +104,8 @@ license][ETLicense]
 		transferEC = True
 		transferOre = True
 		transferAll = True				//Specify all other resources that have a valid transfer mode (ie no solid fuel)
+	   }
+
    
 
 [DMagic]: http://forum.kerbalspaceprogram.com/members/59127
