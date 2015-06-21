@@ -24,6 +24,7 @@ license][ETLicense]
 
  * What is EVA Transfer?
      * A single-purpose addon that allows for resource transfer between two disconnected vessels using an EVA-attachable resource transfer pipe.
+     * It uses the stock fuel line part and texture (and supports Ven's stock part revamp), and can be found in the **Advanced Fuel Systems** node, or the **Logistics** node if using the Community Tech Tree.
  * How is this different from KAS/KIS?
      * This adds only a single feature and lacks much of what is possible with KAS and/or KIS.
 	 * The resource transfer pipe **does not** dock the two vessels together, it is a purely cosmetic connection.
