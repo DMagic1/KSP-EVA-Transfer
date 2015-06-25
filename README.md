@@ -129,5 +129,5 @@ license][ETLicense]
 
 [shield:license-mit]: http://img.shields.io/badge/license-mit-a31f34.svg
 [shield:license-cc-by-sa]: http://img.shields.io/badge/license-CC%20BY--SA-green.svg
-[shield:support-ksp]: http://img.shields.io/badge/for%20KSP-v1.0.2-bad455.svg
+[shield:support-ksp]: http://img.shields.io/badge/for%20KSP-v1.0.4-bad455.svg
 [shield:ckan]: https://img.shields.io/badge/CKAN-Indexed-brightgreen.svg
