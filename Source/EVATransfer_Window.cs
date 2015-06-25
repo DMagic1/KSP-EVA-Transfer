@@ -696,8 +696,6 @@ namespace EVATransfer
 
 			if (transferActive)
 			{
-				refreshPartDatabase();
-				updateResources();
 
 				for (int i = 0; i < selectedResources.Count; i++)
 				{
