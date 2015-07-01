@@ -42,14 +42,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EVATransfer_Skins.cs" />
+    <Compile Include="EVATransfer_Startup.cs" />
     <Compile Include="EVATransfer_Window.cs" />
     <Compile Include="Framework\ET_ExtensionsUnity.cs" />
     <Compile Include="Framework\ET_MonoBehaviourExtended.cs" />
     <Compile Include="Framework\ET_MonoBehaviourWindow.cs" />
     <Compile Include="Framework\ET_SkinsLibrary.cs" />
+    <Compile Include="LFLOXTransferGroup.cs" />
     <Compile Include="ModuleEVATransfer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransferableResource.cs" />
+    <Compile Include="TransferGroup.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
