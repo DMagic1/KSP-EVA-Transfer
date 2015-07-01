@@ -27,6 +27,7 @@ THE SOFTWARE.
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CompoundParts;
@@ -85,7 +86,7 @@ namespace EVATransfer
 
 		private uint targetID;
 		private Guid targetVesselID;
-		private bool loaded;
+		private bool loaded = true;
 
 		public int MaxTransfers
 		{
@@ -120,30 +121,23 @@ namespace EVATransfer
 
 		private void Update()
 		{
-			if (!loaded && HighLogic.LoadedSceneIsFlight && FlightGlobals.ready)
+			if (HighLogic.LoadedSceneIsEditor)
 			{
-				loaded = true;
-
-				targetVessel = FlightGlobals.Vessels.FirstOrDefault(v => v.id == targetVesselID);
-
-				if (targetVessel == null)
-					return;
-
-				compoundPart.target = targetVessel.Parts.FirstOrDefault(p => p.craftID == targetID);
-
-				if (compoundPart.target == null)
-					return;
-
-				attachFuelLine();
-			}
-
-			if (compoundPart.attachState == CompoundPart.AttachState.Attaching)
-			{
-				if (HighLogic.LoadedSceneIsEditor)
+				if (compoundPart.attachState == CompoundPart.AttachState.Attaching)
 				{
+
 					compoundPart.attachState = CompoundPart.AttachState.Detached;
 					InputLockManager.ClearControlLocks();
 				}
+
+				return;
+			}
+
+			if (!loaded)
+			{
+				loaded = true;
+
+				StartCoroutine(loadConnections());
 			}
 
 			if (EVAAttachState != CompoundPart.AttachState.Attaching)
@@ -154,19 +148,23 @@ namespace EVATransfer
 
 			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 20, 1) && checkDistance)
 			{
+				//print("[EVA Transfer] Hit Target");
 				Part p = hit.collider.gameObject.GetComponentUpwards<Part>();
 
 				if (p == null || p.vessel == this.vessel || p.vessel.isEVA)
 				{
+					//print("[EVA Transfer] Wrong Target Type...");
 					compoundPart.direction = Vector3.zero;
 					setKerbalAttach();
 				}
-				else if (Physics.Raycast(new Ray(startCap.transform.position, base.transform.InverseTransformPoint(hit.point).normalized), (startCap.transform.position - hit.point).magnitude - 1, (1 << 0) | (1 << 10) | (1 << 15)))
-				{
-					setKerbalAttach();
-				}
+				//else if (Physics.Raycast(new Ray(startCap.transform.position, base.transform.InverseTransformPoint(hit.point).normalized), (startCap.transform.position - hit.point).magnitude - 1, (1 << 0) | (1 << 10) | (1 << 15)))
+				//{
+				//	print("[EVA Transfer] Something In The Way... Distance " + (startCap.transform.position - hit.point).magnitude);
+				//	setKerbalAttach();
+				//}
 				else
 				{
+					//print("[EVA Transfer] Found Target....");
 					compoundPart.target = p;
 
 					compoundPart.direction = base.transform.InverseTransformPoint(hit.point).normalized;
@@ -190,8 +188,11 @@ namespace EVATransfer
 
 		public override void OnSave(ConfigNode node)
 		{
-			node.AddValue("TargetVesselID", targetVesselID);
-			node.AddValue("TargetPartID", targetID);
+			if (EVAAttachState == CompoundPart.AttachState.Attached)
+			{
+				node.AddValue("TargetVesselID", targetVesselID);
+				node.AddValue("TargetPartID", targetID);
+			}
 
 			base.OnSave(node);
 		}
@@ -206,6 +207,7 @@ namespace EVATransfer
 			if (!node.HasValue("TargetVesselID") || !node.HasValue("TargetPartID"))
 			{
 				loaded = true;
+				severFuelLine();
 				return;
 			}
 
@@ -227,7 +229,51 @@ namespace EVATransfer
 				print("[EVA Refuel] Exception in assigning target part ID:\n" + e);
 			}
 
+			EVAAttachState = CompoundPart.AttachState.Attached;
+
 			loaded = false;
+		}
+
+		IEnumerator loadConnections()
+		{
+			if (!HighLogic.LoadedSceneIsFlight)
+				yield break;
+
+			int timer = 0;
+
+			while (!FlightGlobals.ready || FlightGlobals.ActiveVessel == null || (this.vessel == FlightGlobals.ActiveVessel && timer < 20))
+			{
+				if (FlightGlobals.ready)
+					timer++;
+
+				yield return null;
+			}
+
+			targetVessel = FlightGlobals.Vessels.FirstOrDefault(v => v.id == targetVesselID);
+
+			if (targetVessel == null)
+			{
+				severFuelLine();
+				print("[EVA Transfer] Target Vessel Not Found...");
+				yield break;
+			}
+
+			compoundPart.target = targetVessel.Parts.FirstOrDefault(p => p.craftID == targetID);
+
+			if (compoundPart.target == null)
+			{
+				severFuelLine();
+				print("[EVA Transfer] Target Part Not Found...");
+				yield break;
+			}
+
+			attachFuelLine();
+		}
+
+		private void OnDestroy()
+		{
+			if (EVAAttachState != CompoundPart.AttachState.Attached)
+				severFuelLine();
 		}
 
 		public override void OnTargetSet(Part target)
@@ -443,6 +489,10 @@ namespace EVATransfer
 			targetVessel = null;
 
 			compoundPart.target = null;
+
+			compoundPart.direction = Vector3.zero;
+			compoundPart.targetPosition = Vector3.zero;
+			compoundPart.targetRotation = Quaternion.identity;
 
 			compoundPart.attachState = CompoundPart.AttachState.Detached;
 			EVAAttachState = CompoundPart.AttachState.Detached;
