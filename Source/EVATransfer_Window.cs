@@ -39,7 +39,7 @@ namespace EVATransfer
 	public class EVATransfer_Window : ET_MBW
 	{
 		private bool transferLFLOX;
-		private bool active;
+		private bool windowActive;
 		private bool LFLOXTransferLink;
 		private bool transferActive;
 		private bool dropDown;
@@ -138,12 +138,12 @@ namespace EVATransfer
 
 			updateResources(true, true);
 
-			active = true;
+			windowActive = true;
 		}
 
 		public void severConnection()
 		{
-			active = false;
+			windowActive = false;
 		}
 
 		private void addResource(string name)
@@ -208,7 +208,7 @@ namespace EVATransfer
 
 		protected override void FixedUpdate()
 		{
-			if (!active)
+			if (!windowActive)
 				return;
 
 			if (!Visible)
@@ -243,7 +243,7 @@ namespace EVATransfer
 			versionLabel(id);
 			closeBox(id);
 
-			if (!active)
+			if (!windowActive)
 			{
 				GUILayout.Label("Connection Severed; Transfer Terminated");
 				dropDown = false;
