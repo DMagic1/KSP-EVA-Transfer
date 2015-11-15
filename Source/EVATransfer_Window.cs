@@ -39,7 +39,7 @@ namespace EVATransfer
 	public class EVATransfer_Window : ET_MBW
 	{
 		private bool transferLFLOX;
-		private bool active;
+		private bool windowActive;
 		private bool LFLOXTransferLink;
 		private bool transferActive;
 		private bool dropDown;
@@ -94,6 +94,11 @@ namespace EVATransfer
 			GameEvents.onVesselWasModified.Add(vesselChange);
 		}
 
+		public bool TransferActive
+		{
+			get { return transferActive; }
+		}
+
 		public void setup(bool a, bool b, bool c, bool d, bool e, bool f, bool g, ModuleEVATransfer mod)
 		{
 			evaModule = mod;
@@ -138,12 +143,12 @@ namespace EVATransfer
 
 			updateResources(true, true);
 
-			active = true;
+			windowActive = true;
 		}
 
 		public void severConnection()
 		{
-			active = false;
+			windowActive = false;
 		}
 
 		private void addResource(string name)
@@ -208,7 +213,7 @@ namespace EVATransfer
 
 		protected override void FixedUpdate()
 		{
-			if (!active)
+			if (!windowActive)
 				return;
 
 			if (!Visible)
@@ -243,7 +248,7 @@ namespace EVATransfer
 			versionLabel(id);
 			closeBox(id);
 
-			if (!active)
+			if (!windowActive)
 			{
 				GUILayout.Label("Connection Severed; Transfer Terminated");
 				dropDown = false;
@@ -276,7 +281,7 @@ namespace EVATransfer
 		private void closeBox(int id)
 		{
 			Rect r = new Rect(WindowRect.width - 30, 1, 22, 22);
-			if (GUI.Button(r, "✖"))
+			if (GUI.Button(r, "X"))
 			{
 				evaModule.Events["openEVAFuelTransfer"].active = true;
 				evaModule.Events["closeEVAFuelTransfer"].active = false;
@@ -453,7 +458,7 @@ namespace EVATransfer
 			GUI.EndScrollView();
 		}
 
-		private void toggleTransfer()
+		public void toggleTransfer()
 		{
 			transferActive = !transferActive;
 			dropDown = false;
