@@ -497,10 +497,10 @@ namespace EVATransfer
 		protected virtual bool drawCloseButton(Rect r, bool t, bool b)
 		{
 			if (b)
-				GUI.Label(r, "✖", EVATransfer_Startup.closeButton);
+				GUI.Label(r, "X", EVATransfer_Startup.closeButton);
 			else
 			{
-				if (GUI.Button(r, "✖", EVATransfer_Startup.closeButton))
+				if (GUI.Button(r, "X", EVATransfer_Startup.closeButton))
 				{
 					if (!t)
 						return true;
