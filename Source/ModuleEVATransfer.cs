@@ -79,7 +79,6 @@ namespace EVATransfer
 
 		private float connectionDistance;
 
-		private Vessel sourceVessel;
 		private Vessel targetVessel;
 
 		private RaycastHit hit;
@@ -116,7 +115,27 @@ namespace EVATransfer
 			Events["openEVAFuelTransfer"].guiName = "Open EVA Transfer Control";
 			Events["closeEVAFuelTransfer"].guiName = "Close EVA Transfer Control";
 
-			sourceVessel = vessel;
+			GameEvents.onPartPack.Add(partPack);
+		}
+
+		private void partPack(Part p)
+		{
+			if (p != this.part)
+				return;
+
+			if (evaWindow != null)
+			{
+				if (evaWindow.Visible)
+				{
+					Events["openEVAFuelTransfer"].active = true;
+					Events["closeEVAFuelTransfer"].active = false;
+					evaWindow.StopRepeatingWorker();
+					evaWindow.Visible = false;
+				}
+
+				if (evaWindow.TransferActive)
+					evaWindow.toggleTransfer();
+			}
 		}
 
 		private void Update()
@@ -129,7 +148,6 @@ namespace EVATransfer
 					compoundPart.attachState = CompoundPart.AttachState.Detached;
 					InputLockManager.ClearControlLocks();
 				}
-
 				return;
 			}
 
@@ -249,7 +267,16 @@ namespace EVATransfer
 				yield return null;
 			}
 
-			targetVessel = FlightGlobals.Vessels.FirstOrDefault(v => v.id == targetVesselID);
+			try
+			{
+				targetVessel = FlightGlobals.Vessels.FirstOrDefault(v => v.id == targetVesselID);
+			}
+			catch (Exception e)
+			{
+				print("[EVA Transfer] Exception While Loading Target Vessel\n" + e);
+				severFuelLine();
+				yield break;
+			}
 
 			if (targetVessel == null)
 			{
@@ -258,7 +285,16 @@ namespace EVATransfer
 				yield break;
 			}
 
-			compoundPart.target = targetVessel.Parts.FirstOrDefault(p => p.craftID == targetID);
+			try
+			{
+				compoundPart.target = targetVessel.Parts.FirstOrDefault(p => p.craftID == targetID);
+			}
+			catch (Exception e)
+			{
+				print("[EVA Transfer] Exception While Loading Target Part\n" + e);
+				severFuelLine();
+				yield break;
+			}
 
 			if (compoundPart.target == null)
 			{
@@ -274,6 +310,8 @@ namespace EVATransfer
 		{
 			if (EVAAttachState != CompoundPart.AttachState.Attached)
 				severFuelLine();
+
+			GameEvents.onPartPack.Remove(partPack);
 		}
 
 		public override void OnTargetSet(Part target)
@@ -392,7 +430,7 @@ namespace EVATransfer
 				if (!checkEVADistance)
 					return;
 			}
-			else if (FlightGlobals.ActiveVessel != sourceVessel && FlightGlobals.ActiveVessel != targetVessel)
+			else if (FlightGlobals.ActiveVessel != vessel && FlightGlobals.ActiveVessel != targetVessel)
 				return;
 
 			if (evaWindow == null)
@@ -423,7 +461,7 @@ namespace EVATransfer
 				if (!checkEVADistance)
 					return;
 			}
-			else if (FlightGlobals.ActiveVessel != sourceVessel && FlightGlobals.ActiveVessel != targetVessel)
+			else if (FlightGlobals.ActiveVessel != vessel && FlightGlobals.ActiveVessel != targetVessel)
 				return;
 
 			if (evaWindow != null)
@@ -448,7 +486,7 @@ namespace EVATransfer
 				evaWindow.setup(transferLF, transferLOX, transferMono, transferXen, transferEC, transferOre, transferAll, this);
 			}
 
-			evaWindow.activateVessels(sourceVessel, targetVessel);
+			evaWindow.activateVessels(vessel, targetVessel);
 
 			Events["dropEVAFuelLine"].active = false;
 			Events["pickupEVAFuelLine"].active = false;
