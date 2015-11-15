@@ -32,7 +32,7 @@ license][ETLicense]
 	 * The resource transfer pipe **does not** dock the two vessels together, it is a purely cosmetic connection.
 	 * All resource transfer is handled internally by thy EVA Transfer code; no manual transfer between individual fuel tanks is possible.
 	 * The EVA Transfer pipe start point must be attached to a vessel in the editor, there is no built-in option to attach the pipe itself on EVA, only to connect an already attached pipe to a second vessel.
-	     * KIS may be supported at some time in the future.
+	     * KIS attachment is supported while on EVA.
  * Are there options for which resources can be transferred, how long the pipe can be, etc...?
      * There are many options for configuring EVA Transfer available by editing the included part config file (or by using a Module Manager config to do the same)
 	 * Each of the **primary resources** can be toggled on or off; all **other resources** are controlled by a single option
