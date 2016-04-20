@@ -370,7 +370,7 @@ namespace EVATransfer
 
 			if (!checkLevel)
 			{
-				ScreenMessages.PostScreenMessage("The Kerbal must be above level " + minLevel + "to activate the transfer line.", 6f, ScreenMessageStyle.UPPER_CENTER);
+				ScreenMessages.PostScreenMessage("The Kerbal must be above level " + minLevel + " to activate the transfer line.", 6f, ScreenMessageStyle.UPPER_CENTER);
 				return;
 			}
 
@@ -623,7 +623,7 @@ namespace EVATransfer
 				if (string.IsNullOrEmpty(useProfession))
 					return true;
 
-				if (EVA.GetVesselCrew().First().experienceTrait.Title != useProfession)
+				if (EVA.GetVesselCrew().First().experienceTrait.TypeName != useProfession)
 					return false;
 
 				return true;
