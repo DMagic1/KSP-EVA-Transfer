@@ -89,6 +89,8 @@ namespace EVATransfer
 
 		protected override void Start()
 		{
+			base.Start();
+
 			WindowRect = sessionRect;
 			GameEvents.onVesselChange.Add(vesselChange);
 			GameEvents.onVesselWasModified.Add(vesselChange);
@@ -207,6 +209,8 @@ namespace EVATransfer
 
 		protected override void OnDestroy()
 		{
+			base.OnDestroy();
+
 			GameEvents.onVesselChange.Remove(vesselChange);
 			GameEvents.onVesselWasModified.Remove(vesselChange);
 		}
