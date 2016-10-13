@@ -172,7 +172,9 @@ namespace EVATransfer
 				loxSubract = loxTransferAmount;
 			double loxPartSubtract = loxSubract;
 
-			for (int i = 0; i < fromParts.Count; i++)
+			int l = fromParts.Count;
+
+			for (int i = 0; i < l; i++)
 			{
 				Part p = fromParts[i];
 
@@ -239,7 +241,9 @@ namespace EVATransfer
 			double partAdd = resourceSubtract;
 			double loxPartAdd = loxSubract;
 
-			for (int i = 0; i < toParts.Count; i++)
+			l = toParts.Count;
+
+			for (int i = 0; i < l; i++)
 			{
 				Part p = toParts[i];
 

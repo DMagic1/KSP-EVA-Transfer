@@ -19,8 +19,8 @@ namespace EVATransfer
 		protected double transferAmount;
 		protected double transferStartAmount;
 
-		private Dictionary<string, List<Part>> vesselAParts = new Dictionary<string, List<Part>>();
-		private Dictionary<string, List<Part>> vesselBParts = new Dictionary<string, List<Part>>();
+		private DictionaryValueList<string, List<Part>> vesselAParts = new DictionaryValueList<string, List<Part>>();
+		private DictionaryValueList<string, List<Part>> vesselBParts = new DictionaryValueList<string, List<Part>>();
 
 		public TransferGroup(TransferableResource r)
 		{
@@ -109,18 +109,32 @@ namespace EVATransfer
 		{
 			resetValues();
 
-			if (vesselAParts.ContainsKey(name))
+			if (vesselAParts.Contains(name))
 			{
-				foreach (Part p in vesselAParts[name])
+				int l = vesselAParts[name].Count;
+
+				for (int i = 0; i < l; i++)
 				{
+					Part p = vesselAParts[name][i];
+
+					if (p == null)
+						continue;
+
 					checkPartAmount(p, true);
 				}
 			}
 
-			if (vesselBParts.ContainsKey(name))
+			if (vesselBParts.Contains(name))
 			{
-				foreach (Part p in vesselBParts[name])
+				int l = vesselBParts[name].Count;
+
+				for (int i = 0; i < l; i++)
 				{
+					Part p = vesselBParts[name][i];
+
+					if (p == null)
+						continue;
+
 					checkPartAmount(p, false);
 				}
 			}
@@ -131,13 +145,18 @@ namespace EVATransfer
 			if (vesselA == null || vesselB == null)
 				return;
 
-			vesselAParts = new Dictionary<string, List<Part>>();
-			vesselBParts = new Dictionary<string, List<Part>>();
+			vesselAParts = new DictionaryValueList<string, List<Part>>();
+			vesselBParts = new DictionaryValueList<string, List<Part>>();
 
 			List<Part> sourceList = new List<Part>();
 
-			foreach (Part p in vesselA.Parts)
+			for (int i = vesselA.Parts.Count - 1; i >= 0; i--)
 			{
+				Part p = vesselA.Parts[i];
+
+				if (p == null || p.State == PartStates.DEAD)
+					continue;
+
 				if (!checkPartForResources(p))
 					continue;
 
@@ -146,13 +165,18 @@ namespace EVATransfer
 
 			sortParts(sourceList, fillMode);
 
-			if (!vesselAParts.ContainsKey(name))
+			if (!vesselAParts.Contains(name))
 				vesselAParts.Add(name, sourceList);
 
 			List<Part> targetList = new List<Part>();
 
-			foreach (Part p in vesselB.Parts)
+			for (int i = vesselB.Parts.Count - 1; i >= 0; i--)
 			{
+				Part p = vesselB.Parts[i];
+
+				if (p == null || p.State == PartStates.DEAD)
+					continue;
+
 				if (!checkPartForResources(p))
 					continue;
 
@@ -161,7 +185,7 @@ namespace EVATransfer
 
 			sortParts(targetList, fillMode);
 
-			if (!vesselBParts.ContainsKey(name))
+			if (!vesselBParts.Contains(name))
 				vesselBParts.Add(name, targetList);
 		}
 
@@ -261,7 +285,7 @@ namespace EVATransfer
 			if (vesselA == null || vesselB == null)
 				return;
 
-			if (!vesselAParts.ContainsKey(name) || !vesselBParts.ContainsKey(name))
+			if (!vesselAParts.Contains(name) || !vesselBParts.Contains(name))
 				return;
 
 			if (transferScale <= 0.1 && transferScale >= -0.1)
@@ -293,7 +317,9 @@ namespace EVATransfer
 			double resourceSubtract = transferStartAmount * time;
 			double partSubtract = resourceSubtract;
 
-			for (int i = 0; i < fromParts.Count; i++)
+			int l = fromParts.Count;
+
+			for (int i = 0; i < l; i++)
 			{
 				Part p = fromParts[i];
 
@@ -330,7 +356,9 @@ namespace EVATransfer
 
 			double partAdd = resourceSubtract;
 
-			for (int i = 0; i < toParts.Count; i++)
+			l = toParts.Count;
+
+			for (int i = 0; i < l; i++)
 			{
 				Part p = toParts[i];
 

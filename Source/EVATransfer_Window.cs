@@ -54,8 +54,8 @@ namespace EVATransfer
 
 		private float transferComplete;
 
-		private Dictionary<string, TransferGroup> allowedOtherResources = new Dictionary<string, TransferGroup>();
-		private Dictionary<string, TransferGroup> allowedStockResources = new Dictionary<string, TransferGroup>();
+		private DictionaryValueList<string, TransferGroup> allowedOtherResources = new DictionaryValueList<string, TransferGroup>();
+		private DictionaryValueList<string, TransferGroup> allowedStockResources = new DictionaryValueList<string, TransferGroup>();
 
 		private List<TransferGroup> selectedResources = new List<TransferGroup>();
 
@@ -155,7 +155,7 @@ namespace EVATransfer
 
 		private void addResource(string name)
 		{
-			if (allowedStockResources.ContainsKey(name))
+			if (allowedStockResources.Contains(name))
 				return;
 
 			if (!EVATransfer_Startup.loadedResources.ContainsKey(name))
@@ -192,7 +192,7 @@ namespace EVATransfer
 				if (r.Mode == ResourceTransferMode.NONE)
 					continue;
 
-				if (allowedOtherResources.ContainsKey(r.Name))
+				if (allowedOtherResources.Contains(r.Name))
 					continue;
 
 				if (r == null)
@@ -239,9 +239,14 @@ namespace EVATransfer
 
 		private void updateResources(bool values, bool parts)
 		{
-			for (int i = 0; i < selectedResources.Count; i++)
+			int l = selectedResources.Count;
+
+			for (int i = 0; i < l; i++)
 			{
 				TransferGroup t = selectedResources[i];
+
+				if (t == null)
+					continue;
 
 				t.updateValues(values, parts, evaModule.fillMode);
 			}
@@ -300,8 +305,15 @@ namespace EVATransfer
 
 			Color old = GUI.color;
 
-			foreach (TransferGroup t in allowedStockResources.Values)
+			int l = allowedStockResources.Count;
+
+			for (int i = 0; i < l; i++)
 			{
+				TransferGroup t = allowedStockResources.At(i);
+
+				if (t == null)
+					continue;
+
 				GUIStyle s;
 				if (selectedResources.Contains(t))
 					s = EVATransfer_Startup.activeButton;
@@ -322,17 +334,36 @@ namespace EVATransfer
 				GUI.color = old;
 			}
 
-			if (allowedOtherResources.Count > 0 && allowedOtherResources.Any(a => a.Value.OnBoard))
+			if (allowedOtherResources.Count > 0)
 			{
-				GUILayout.FlexibleSpace();
+				bool flag = false;
 
-				if (GUILayout.Button(EVATransfer_Startup.dropDownIcon, GUILayout.Width(36), GUILayout.Height(36)))
+				for (int i = allowedOtherResources.Count - 1; i >= 0; i--)
 				{
-					if (!transferActive)
+					TransferGroup t = allowedOtherResources.At(i);
+
+					if (t == null)
+						continue;
+
+					if (t.OnBoard)
 					{
-						dropDown = !dropDown;
-						if (!dropDown)
-							WindowOptions = new GUILayoutOption[3] { GUILayout.Width(300), GUILayout.Height(120), GUILayout.MaxHeight(120) };
+						flag = true;
+						break;
+					}
+				}
+
+				if (flag)
+				{
+					GUILayout.FlexibleSpace();
+
+					if (GUILayout.Button(EVATransfer_Startup.dropDownIcon, GUILayout.Width(36), GUILayout.Height(36)))
+					{
+						if (!transferActive)
+						{
+							dropDown = !dropDown;
+							if (!dropDown)
+								WindowOptions = new GUILayoutOption[3] { GUILayout.Width(300), GUILayout.Height(120), GUILayout.MaxHeight(120) };
+						}
 					}
 				}
 			}
@@ -360,10 +391,10 @@ namespace EVATransfer
 
 		private void resourceLabels(int id)
 		{
-			if (selectedResources.Count <= 0)
-			{
+			int l = selectedResources.Count;
+
+			if (l <= 0)
 				return;
-			}
 
 			GUILayout.Space(30);
 
@@ -377,7 +408,7 @@ namespace EVATransfer
 
 			r.y += 17;
 
-			for (int i = 0; i < selectedResources.Count; i++)
+			for (int i = 0; i < l; i++)
 			{
 				TransferGroup t = selectedResources[i];
 
@@ -440,9 +471,11 @@ namespace EVATransfer
 
 			Rect r = new Rect(2, 2, 220, 23);
 
-			for (int i = 0; i < allowedOtherResources.Count; i++)
+			int l = allowedOtherResources.Count;
+
+			for (int i = 0; i < l; i++)
 			{
-				TransferGroup t = allowedOtherResources.ElementAt(i).Value;
+				TransferGroup t = allowedOtherResources.At(i);
 
 				if (!t.OnBoard)
 					continue;
@@ -467,11 +500,16 @@ namespace EVATransfer
 			transferActive = !transferActive;
 			dropDown = false;
 
+			int l = selectedResources.Count;
+
 			if (transferActive)
 			{
-				for (int i = 0; i < selectedResources.Count; i++)
+				for (int i = 0; i < l; i++)
 				{
 					TransferGroup t = selectedResources[i];
+
+					if (t == null)
+						continue;
 
 					t.toggleTransfer();
 				}
@@ -480,9 +518,12 @@ namespace EVATransfer
 			}
 			else
 			{
-				for (int i = 0; i < selectedResources.Count; i++)
+				for (int i = 0; i < l; i++)
 				{
 					TransferGroup t = selectedResources[i];
+
+					if (t == null)
+						continue;
 
 					t.finishTransfer();
 				}
@@ -499,14 +540,14 @@ namespace EVATransfer
 					return;
 			}
 
-			if (allowedStockResources.ContainsKey(t.Resource.Name))
+			if (allowedStockResources.Contains(t.Resource.Name))
 			{
 				if (selectedResources.Contains(t))
 					selectedResources.Remove(t);
 				else if (selectedResources.Count < evaModule.MaxTransfers)
 					selectedResources.Add(t);
 			}
-			else if (allowedOtherResources.ContainsKey(t.Resource.Name))
+			else if (allowedOtherResources.Contains(t.Resource.Name))
 			{
 				if (selectedResources.Contains(t))
 					selectedResources.Remove(t);
@@ -556,10 +597,30 @@ namespace EVATransfer
 
 		private void vesselChange(Vessel v)
 		{
-			foreach (TransferGroup t in allowedStockResources.Values)
+			int l = allowedStockResources.Count;
+
+			for (int i = 0; i < l; i++)
+			{
+				TransferGroup t = allowedStockResources.At(i);
+
+				if (t == null)
+					continue;
+
 				t.updateVessels(sourceVessel, targetVessel);
-			foreach (TransferGroup t in allowedOtherResources.Values)
+			}
+
+			l = allowedOtherResources.Count;
+
+			for (int i = 0; i < l; i++)
+			{
+				TransferGroup t = allowedOtherResources.At(i);
+
+				if (t == null)
+					continue;
+
 				t.updateVessels(sourceVessel, targetVessel);
+			}
+
 			updateResources(true, true);
 		}
 
@@ -578,12 +639,17 @@ namespace EVATransfer
 		{
 			float time = Time.fixedDeltaTime;
 
+			int l = selectedResources.Count;
+
 			if (transferComplete <= 0)
 			{
 				transferActive = false;
-				for (int i = 0; i < selectedResources.Count; i++)
+				for (int i = 0; i < l; i++)
 				{
 					TransferGroup t = selectedResources[i];
+
+					if (t == null)
+						continue;
 
 					t.finishTransfer();
 				}
@@ -592,9 +658,12 @@ namespace EVATransfer
 
 			transferComplete -= time;
 
-			for (int i = 0; i < selectedResources.Count; i++)
+			for (int i = 0; i < l; i++)
 			{
 				TransferGroup t = selectedResources[i];
+
+				if (t == null)
+					continue;
 
 				t.transferResources(time, evaModule.transferSpeed);
 			}
