@@ -39,7 +39,7 @@ namespace EVATransfer
 	public class ModuleEVATransfer : CModuleLinkedMesh
 	{
 		[KSPField]
-		public string useProfession = "Engineer";
+		public string useSkill = "";
 		[KSPField]
 		public int minLevel = 0;
 		[KSPField]
@@ -94,7 +94,7 @@ namespace EVATransfer
 
 		public override void OnStart(PartModule.StartState state)
 		{
-			useProfession = professionValid(useProfession);
+			useSkill = professionValid(useSkill);
 			minLevel = (int)clampValue(minLevel, 0, 5);
 			maxDistance = clampValue(maxDistance, 10, 500);
 			maxSlack = clampValue(maxSlack, 5, 50);
@@ -116,6 +116,7 @@ namespace EVATransfer
 			Events["closeEVAFuelTransfer"].guiName = "Close EVA Transfer Control";
 
 			GameEvents.onPartPack.Add(partPack);
+			GameEvents.onPartCouple.Add(onCouple);
 		}
 
 		private void partPack(Part p)
@@ -312,6 +313,7 @@ namespace EVATransfer
 				severFuelLine();
 
 			GameEvents.onPartPack.Remove(partPack);
+			GameEvents.onPartCouple.Remove(onCouple);
 		}
 
 		public override void OnTargetSet(Part target)
@@ -322,6 +324,23 @@ namespace EVATransfer
 		public override void OnTargetLost()
 		{
 			base.OnTargetLost();
+		}
+
+		private void onCouple(GameEvents.FromToAction<Part, Part> action)
+		{
+			if (EVAAttachState != CompoundPart.AttachState.Attached)
+				return;
+
+			if (action.from.vessel == vessel)
+			{
+				if (targetVessel != null && action.to.vessel == targetVessel)
+					severFuelLine();
+			}
+			else if (action.to.vessel == vessel)
+			{
+				if (targetVessel != null && action.from.vessel == targetVessel)
+					severFuelLine();
+			}
 		}
 
 		private void LateUpdate()
@@ -364,7 +383,7 @@ namespace EVATransfer
 
 			if (!checkProfession)
 			{
-				ScreenMessages.PostScreenMessage("The Kerbal must be an " + useProfession + " to activate the transfer line.", 6f, ScreenMessageStyle.UPPER_CENTER);
+				ScreenMessages.PostScreenMessage("The Kerbal must have the " + useSkill + " to activate the transfer line.", 6f, ScreenMessageStyle.UPPER_CENTER);
 				return;
 			}
 
@@ -540,16 +559,31 @@ namespace EVATransfer
 		{
 			switch (s)
 			{
-				case "Pilot":
-				case "Engineer":
-				case "Scientist":
+				case "AutopilotSkill":
+				case "ConverterSkill":
+				case "DrillSkill":
+				case "EnginePower":
+				case "ExternalExperimentSkill":
+				case "FuelUsage":
+				case "FullVesselControlSkill":
+				case "HeatProduction":
+				case "MaxThrottle":
+				case "PartScienceReturn":
+				case "RepairSkill":
+				case "ScienceResetSkill":
+				case "ScienceSkill":
+				case "SpecialExperimentSkill":
+				case "VesselScienceReturn":
 					return s;
 				case "pilot":
-					return "Pilot";
+				case "Pilot":
+					return "AutopilotSkill";
+				case "Engineer":
 				case "engineer":
-					return "Engineer";
+					return "RepairSkill";
+				case "Scientist":
 				case "scientist":
-					return "Scientist";
+					return "ScienceSkill";
 			}
 
 			return "";
@@ -620,13 +654,13 @@ namespace EVATransfer
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(useProfession))
+				if (string.IsNullOrEmpty(useSkill))
 					return true;
 
-				if (EVA.GetVesselCrew().First().experienceTrait.TypeName != useProfession)
-					return false;
+				if (EVA.GetVesselCrew().First().experienceTrait.Effects.Any(e => e.GetType().Name == useSkill))
+					return true;
 
-				return true;
+				return false;
 			}
 		}
 
