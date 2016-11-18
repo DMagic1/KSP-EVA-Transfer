@@ -53,6 +53,8 @@ namespace EVATransfer
 		[KSPField]
 		public int fillMode = 2;
 		[KSPField]
+		public bool ignoreInactiveTanks = true;
+		[KSPField]
 		public bool tooltips = true;
 		[KSPField]
 		public float loxlfTransferRatio = 1.2222f;
