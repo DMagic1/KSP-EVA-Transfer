@@ -304,15 +304,18 @@ namespace EVATransfer
 			}
 		}
 
-		protected override bool checkPartForResources(Part p)
+		protected override bool checkPartForResources(Part p, bool ignore)
 		{
 			if (!p.Resources.Contains(loxName))
+				return false;
+
+			if (ignore && !p.Resources[loxName]._flowState)
 				return false;
 
 			if (p.Resources[loxName].maxAmount < 0.6)
 				return false;
 
-			return base.checkPartForResources(p);
+			return base.checkPartForResources(p, ignore);
 		}
 
 		protected override void resetValues()

@@ -89,10 +89,10 @@ namespace EVATransfer
 			toggleResourceSetup();
 		}
 
-		public void updateValues(bool values, bool parts, int mode)
+		public void updateValues(bool values, bool parts, int mode, bool ignoreInactive)
 		{
 			if (parts)
-				updatePartList(mode);
+				updatePartList(mode, ignoreInactive);
 
 			if (values)
 				updateResources();
@@ -140,7 +140,7 @@ namespace EVATransfer
 			}
 		}
 
-		private void updatePartList(int fillMode)
+		private void updatePartList(int fillMode, bool ignoreInactive)
 		{
 			if (vesselA == null || vesselB == null)
 				return;
@@ -157,7 +157,7 @@ namespace EVATransfer
 				if (p == null || p.State == PartStates.DEAD)
 					continue;
 
-				if (!checkPartForResources(p))
+				if (!checkPartForResources(p, ignoreInactive))
 					continue;
 
 				sourceList.Add(p);
@@ -177,7 +177,7 @@ namespace EVATransfer
 				if (p == null || p.State == PartStates.DEAD)
 					continue;
 
-				if (!checkPartForResources(p))
+				if (!checkPartForResources(p, ignoreInactive))
 					continue;
 
 				targetList.Add(p);
@@ -189,9 +189,12 @@ namespace EVATransfer
 				vesselBParts.Add(name, targetList);
 		}
 
-		protected virtual bool checkPartForResources(Part p)
+		protected virtual bool checkPartForResources(Part p, bool ignore)
 		{
 			if (!p.Resources.Contains(name))
+				return false;
+
+			if (ignore && !p.Resources[name].flowState)
 				return false;
 
 			if (p.Resources[name].maxAmount < 0.6)

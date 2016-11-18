@@ -248,7 +248,7 @@ namespace EVATransfer
 				if (t == null)
 					continue;
 
-				t.updateValues(values, parts, evaModule.fillMode);
+				t.updateValues(values, parts, evaModule.fillMode, evaModule.ignoreInactiveTanks);
 			}
 		}
 
