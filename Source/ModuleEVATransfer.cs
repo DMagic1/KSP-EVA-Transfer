@@ -88,6 +88,7 @@ namespace EVATransfer
 		private uint targetID;
 		private Guid targetVesselID;
 		private bool loaded = true;
+		private bool finishedLoading = true;
 
 		public int MaxTransfers
 		{
@@ -169,23 +170,15 @@ namespace EVATransfer
 
 			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 20, 1) && checkDistance)
 			{
-				//print("[EVA Transfer] Hit Target");
 				Part p = hit.collider.gameObject.GetComponentUpwards<Part>();
 
 				if (p == null || p.vessel == this.vessel || p.vessel.isEVA)
 				{
-					//print("[EVA Transfer] Wrong Target Type...");
 					compoundPart.direction = Vector3.zero;
 					setKerbalAttach();
 				}
-				//else if (Physics.Raycast(new Ray(startCap.transform.position, base.transform.InverseTransformPoint(hit.point).normalized), (startCap.transform.position - hit.point).magnitude - 1, (1 << 0) | (1 << 10) | (1 << 15)))
-				//{
-				//	print("[EVA Transfer] Something In The Way... Distance " + (startCap.transform.position - hit.point).magnitude);
-				//	setKerbalAttach();
-				//}
 				else
 				{
-					//print("[EVA Transfer] Found Target....");
 					compoundPart.target = p;
 
 					compoundPart.direction = base.transform.InverseTransformPoint(hit.point).normalized;
@@ -195,9 +188,7 @@ namespace EVATransfer
 					if (Input.GetMouseButtonUp(0))
 					{
 						if ((startCap.transform.position - hit.point).magnitude < maxDistance)
-						{
 							attachFuelLine();
-						}
 					}
 				}
 			}
@@ -253,6 +244,7 @@ namespace EVATransfer
 			EVAAttachState = CompoundPart.AttachState.Attached;
 
 			loaded = false;
+			finishedLoading = false;
 		}
 
 		IEnumerator loadConnections()
@@ -278,12 +270,14 @@ namespace EVATransfer
 			{
 				print("[EVA Transfer] Exception While Loading Target Vessel\n" + e);
 				severFuelLine();
+				finishedLoading = true;
 				yield break;
 			}
 
 			if (targetVessel == null)
 			{
 				severFuelLine();
+				finishedLoading = true;
 				print("[EVA Transfer] Target Vessel Not Found...");
 				yield break;
 			}
@@ -296,17 +290,20 @@ namespace EVATransfer
 			{
 				print("[EVA Transfer] Exception While Loading Target Part\n" + e);
 				severFuelLine();
+				finishedLoading = true;
 				yield break;
 			}
 
 			if (compoundPart.target == null)
 			{
 				severFuelLine();
+				finishedLoading = true;
 				print("[EVA Transfer] Target Part Not Found...");
 				yield break;
 			}
 
 			attachFuelLine();
+			finishedLoading = true;
 		}
 
 		private void OnDestroy()
@@ -347,7 +344,7 @@ namespace EVATransfer
 
 		private void LateUpdate()
 		{
-			if (EVAAttachState != CompoundPart.AttachState.Attached)
+			if (EVAAttachState != CompoundPart.AttachState.Attached || !finishedLoading)
 				return;
 
 			OnTargetUpdate();
@@ -356,11 +353,16 @@ namespace EVATransfer
 		public override void OnTargetUpdate()
 		{
 			base.OnTargetUpdate();
+
+			if (targetAnchor == null)
+				return;
+
+			compoundPart.targetPosition = base.transform.InverseTransformPoint(base.targetAnchor.position);
 		}
 
 		private void FixedUpdate()
 		{
-			if (EVAAttachState != CompoundPart.AttachState.Attached)
+			if (EVAAttachState != CompoundPart.AttachState.Attached || !finishedLoading)
 				return;
 
 			float distance = (endCap.transform.position - startCap.transform.position).magnitude;
