@@ -322,7 +322,7 @@ namespace EVATransfer
 				else
 					s = EVATransfer_Startup.button;
 
-				if (GUILayout.Button(new GUIContent("", t.Resource.Name), s, GUILayout.Width(36), GUILayout.Height(36)))
+				if (GUILayout.Button(new GUIContent("", t.Resource.DisplayName), s, GUILayout.Width(36), GUILayout.Height(36)))
 				{
 					if (!transferActive)
 						toggleSelectedResource(t);
@@ -482,7 +482,7 @@ namespace EVATransfer
 
 				if (r.yMin >= (dropDownScroll.y - 25) && r.yMax <= (dropDownScroll.y + 285))
 				{
-					if (GUI.Button(r, t.Resource.Name, selectedResources.Contains(t) ? EVATransfer_Startup.activeButton : EVATransfer_Startup.button))
+					if (GUI.Button(r, t.Resource.DisplayName, selectedResources.Contains(t) ? EVATransfer_Startup.activeButton : EVATransfer_Startup.button))
 					{
 						toggleSelectedResource(t);
 						WindowOptions = new GUILayoutOption[3] { GUILayout.Width(300), GUILayout.Height(120), GUILayout.MaxHeight(120) };

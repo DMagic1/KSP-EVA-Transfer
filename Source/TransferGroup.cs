@@ -13,6 +13,7 @@ namespace EVATransfer
 
 		protected TransferableResource resource;
 		protected string name;
+		private string shortName;
 		protected double vesselACurrent, vesselBCurrent;
 		protected double vesselAMax, vesselBMax;
 		protected double transferScale;
@@ -26,6 +27,7 @@ namespace EVATransfer
 		{
 			resource = r;
 			name = resource.Name;
+			shortName = resource.ShortName;
 		}
 
 		public TransferGroup()
@@ -413,7 +415,7 @@ namespace EVATransfer
 				r.y += 2;
 				r.width = 100;
 				r.height = 18;
-				GUI.Label(r, name, EVATransfer_Startup.labelLeft);
+				GUI.Label(r, shortName, EVATransfer_Startup.labelLeft);
 			}
 		}
 

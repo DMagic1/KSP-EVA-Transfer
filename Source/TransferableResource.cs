@@ -9,6 +9,7 @@ namespace EVATransfer
 	public class TransferableResource
 	{
 		private PartResourceDefinition resource;
+		private string abbreviation;
 		private string name;
 		private bool primary;
 		private Texture2D icon;
@@ -20,6 +21,7 @@ namespace EVATransfer
 			resource = r;
 			name = resource.name;
 			mode = resource.resourceTransferMode;
+			abbreviation = resource.abbreviation;
 
 			switch (name)
 			{
@@ -60,6 +62,16 @@ namespace EVATransfer
 		public string Name
 		{
 			get { return name; }
+		}
+
+		public string DisplayName
+		{
+			get { return resource.displayName; }
+		}
+
+		public string ShortName
+		{
+			get { return abbreviation; }
 		}
 
 		public bool Primary
