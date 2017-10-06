@@ -30,6 +30,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using CompoundParts;
 using Experience;
 using UnityEngine;
@@ -77,6 +78,9 @@ namespace EVATransfer
 		private Transform EVAJetpack;
 		private EVATransfer_Window evaWindow;
 
+		private static MethodInfo _previewMethod;
+		private static bool reflected;
+
 		private CompoundPart.AttachState EVAAttachState;
 
 		private float connectionDistance;
@@ -97,6 +101,9 @@ namespace EVATransfer
 
 		public override void OnStart(PartModule.StartState state)
 		{
+			if (!reflected)
+				assignReflection();
+
 			useSkill = professionValid(useSkill);
 			minLevel = (int)clampValue(minLevel, 0, 5);
 			maxDistance = clampValue(maxDistance, 10, 500);
@@ -195,7 +202,7 @@ namespace EVATransfer
 			else
 				setKerbalAttach();
 
-			base.OnPreviewAttachment(compoundPart.direction, compoundPart.targetPosition, compoundPart.targetRotation);
+			OnPreviewAttachment(compoundPart.direction, compoundPart.targetPosition, compoundPart.targetRotation);
 		}
 
 		public override void OnSave(ConfigNode node)
@@ -374,6 +381,17 @@ namespace EVATransfer
 		public override void OnPreviewAttachment(UnityEngine.Vector3 rDir, UnityEngine.Vector3 rPos, UnityEngine.Quaternion rRot)
 		{
 			base.OnPreviewAttachment(rDir, rPos, rRot);
+
+			try
+			{
+				_previewMethod.Invoke(
+					this,
+					new object[] { true, rDir, rPos, rRot });
+			}
+			catch (Exception e)
+			{
+				Debug.Log("Error in invoking EVA fuel line anchor preview method\n" + e);
+			}
 		}
 
 		[KSPEvent(guiActive = false, guiActiveUnfocused = true, externalToEVAOnly = true, active = true, unfocusedRange = 4)]
@@ -701,6 +719,20 @@ namespace EVATransfer
 
 				return true;
 			}
+		}
+
+		private void assignReflection()
+		{
+			try
+			{
+				_previewMethod = typeof(CModuleLinkedMesh).GetMethod("TrackAnchor", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(bool), typeof(Vector3), typeof(Vector3), typeof(Quaternion) }, null);
+			}
+			catch (Exception e)
+			{
+				Debug.Log("Error in assigning EVA fuel line anchor preview method\n" + e);
+			}
+
+			reflected = true;
 		}
 	}
 }
