@@ -272,7 +272,7 @@ namespace EVATransfer
 
 		protected override void DrawWindowPost(int id)
 		{
-			if (dropDown && Event.current.type == EventType.mouseDown && !ddRect.Contains(Event.current.mousePosition))
+			if (dropDown && Event.current.type == EventType.MouseDown && !ddRect.Contains(Event.current.mousePosition))
 			{
 				WindowOptions = new GUILayoutOption[3] { GUILayout.Width(300), GUILayout.Height(120), GUILayout.MaxHeight(120) };
 				dropDown = false;
